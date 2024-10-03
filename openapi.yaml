@@ -1,0 +1,766 @@
+components:
+  schemas:
+    Availability:
+      properties:
+        date:
+          format: date
+          title: Date
+          type: string
+        id:
+          title: Id
+          type: string
+        isAvailable:
+          title: Isavailable
+          type: boolean
+        timestamp:
+          format: date-time
+          title: Timestamp
+          type: string
+        userId:
+          title: Userid
+          type: string
+      required:
+      - date
+      - isAvailable
+      - id
+      - userId
+      - timestamp
+      title: Availability
+      type: object
+    AvailabilityCreate:
+      properties:
+        date:
+          format: date
+          title: Date
+          type: string
+        isAvailable:
+          title: Isavailable
+          type: boolean
+      required:
+      - date
+      - isAvailable
+      title: AvailabilityCreate
+      type: object
+    Body_login_for_access_token_api_login_post:
+      properties:
+        client_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Id
+        client_secret:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Secret
+        grant_type:
+          anyOf:
+          - pattern: password
+            type: string
+          - type: 'null'
+          title: Grant Type
+        password:
+          title: Password
+          type: string
+        scope:
+          default: ''
+          title: Scope
+          type: string
+        username:
+          title: Username
+          type: string
+      required:
+      - username
+      - password
+      title: Body_login_for_access_token_api_login_post
+      type: object
+    DailyConstraint:
+      properties:
+        date:
+          format: date
+          title: Date
+          type: string
+        dateUpdated:
+          format: date-time
+          title: Dateupdated
+          type: string
+        id:
+          title: Id
+          type: string
+        isHoliday:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          default: false
+          title: Isholiday
+        maxEmployees:
+          title: Maxemployees
+          type: integer
+        minEmployees:
+          title: Minemployees
+          type: integer
+      required:
+      - date
+      - minEmployees
+      - maxEmployees
+      - id
+      - dateUpdated
+      title: DailyConstraint
+      type: object
+    DailyConstraintCreate:
+      properties:
+        date:
+          format: date
+          title: Date
+          type: string
+        isHoliday:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          default: false
+          title: Isholiday
+        maxEmployees:
+          title: Maxemployees
+          type: integer
+        minEmployees:
+          title: Minemployees
+          type: integer
+      required:
+      - date
+      - minEmployees
+      - maxEmployees
+      title: DailyConstraintCreate
+      type: object
+    DailyConstraintUpdate:
+      properties:
+        isHoliday:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Isholiday
+        maxEmployees:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Maxemployees
+        minEmployees:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Minemployees
+      title: DailyConstraintUpdate
+      type: object
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          title: Detail
+          type: array
+      title: HTTPValidationError
+      type: object
+    HolidayDefaults:
+      properties:
+        maxEmployees:
+          title: Maxemployees
+          type: integer
+        minEmployees:
+          title: Minemployees
+          type: integer
+      required:
+      - minEmployees
+      - maxEmployees
+      title: HolidayDefaults
+      type: object
+    Schedule:
+      properties:
+        assigned:
+          title: Assigned
+          type: boolean
+        date:
+          format: date
+          title: Date
+          type: string
+        id:
+          title: Id
+          type: string
+        timestamp:
+          format: date-time
+          title: Timestamp
+          type: string
+        userId:
+          title: Userid
+          type: string
+      required:
+      - date
+      - assigned
+      - id
+      - userId
+      - timestamp
+      title: Schedule
+      type: object
+    Token:
+      properties:
+        accessToken:
+          title: Accesstoken
+          type: string
+        role:
+          title: Role
+          type: string
+        tokenType:
+          title: Tokentype
+          type: string
+        userId:
+          title: Userid
+          type: string
+      required:
+      - accessToken
+      - tokenType
+      - userId
+      - role
+      title: Token
+      type: object
+    User:
+      properties:
+        email:
+          format: email
+          title: Email
+          type: string
+        id:
+          title: Id
+          type: string
+        name:
+          title: Name
+          type: string
+        role:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: employee
+          title: Role
+      required:
+      - name
+      - email
+      - id
+      title: User
+      type: object
+    UserCreate:
+      properties:
+        email:
+          format: email
+          title: Email
+          type: string
+        name:
+          title: Name
+          type: string
+        password:
+          title: Password
+          type: string
+        role:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: employee
+          title: Role
+      required:
+      - name
+      - email
+      - password
+      title: UserCreate
+      type: object
+    UserUpdate:
+      properties:
+        email:
+          anyOf:
+          - format: email
+            type: string
+          - type: 'null'
+          title: Email
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        password:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Password
+        role:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Role
+      title: UserUpdate
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          title: Location
+          type: array
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+      type: object
+    WeekdayDefaults:
+      properties:
+        maxEmployees:
+          title: Maxemployees
+          type: integer
+        minEmployees:
+          title: Minemployees
+          type: integer
+        weekday:
+          title: Weekday
+          type: integer
+      required:
+      - weekday
+      - minEmployees
+      - maxEmployees
+      title: WeekdayDefaults
+      type: object
+  securitySchemes:
+    OAuth2PasswordBearer:
+      flows:
+        password:
+          scopes: {}
+          tokenUrl: signin
+      type: oauth2
+info:
+  title: FastAPI
+  version: 0.1.0
+openapi: 3.1.0
+paths:
+  /api/availabilities:
+    post:
+      operationId: create_availability_api_availabilities_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AvailabilityCreate'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Availability'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Create Availability
+  /api/availabilities/{userId}:
+    get:
+      operationId: read_availabilities_api_availabilities__userId__get
+      parameters:
+      - in: path
+        name: userId
+        required: true
+        schema:
+          title: Userid
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Availability'
+                title: Response Read Availabilities Api Availabilities  Userid  Get
+                type: array
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Read Availabilities
+  /api/daily-constraints:
+    get:
+      operationId: read_daily_constraints_api_daily_constraints_get
+      parameters:
+      - in: query
+        name: skip
+        required: false
+        schema:
+          default: 0
+          title: Skip
+          type: integer
+      - in: query
+        name: limit
+        required: false
+        schema:
+          default: 31
+          title: Limit
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DailyConstraint'
+                title: Response Read Daily Constraints Api Daily Constraints Get
+                type: array
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Read Daily Constraints
+    post:
+      operationId: create_daily_constraint_api_daily_constraints_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DailyConstraintCreate'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DailyConstraint'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Create Daily Constraint
+  /api/daily-constraints/{date}:
+    get:
+      operationId: read_daily_constraint_api_daily_constraints__date__get
+      parameters:
+      - in: path
+        name: date
+        required: true
+        schema:
+          format: date
+          title: Date
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DailyConstraint'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Read Daily Constraint
+  /api/daily-constraints/{id}:
+    delete:
+      operationId: delete_daily_constraint_api_daily_constraints__id__delete
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          title: Id
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Delete Daily Constraint
+    patch:
+      operationId: update_daily_constraint_api_daily_constraints__id__patch
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          title: Id
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DailyConstraintUpdate'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DailyConstraint'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Update Daily Constraint
+  /api/login:
+    post:
+      operationId: login_for_access_token_api_login_post
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Body_login_for_access_token_api_login_post'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Login For Access Token
+  /api/schedules:
+    get:
+      operationId: read_schedules_api_schedules_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Schedule'
+                title: Response Read Schedules Api Schedules Get
+                type: array
+          description: Successful Response
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Read Schedules
+  /api/schedules/run:
+    post:
+      operationId: run_scheduler_api_schedules_run_post
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Run Scheduler
+  /api/users:
+    get:
+      operationId: read_users_api_users_get
+      parameters:
+      - in: query
+        name: skip
+        required: false
+        schema:
+          default: 0
+          title: Skip
+          type: integer
+      - in: query
+        name: limit
+        required: false
+        schema:
+          default: 100
+          title: Limit
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/User'
+                title: Response Read Users Api Users Get
+                type: array
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Read Users
+    post:
+      operationId: create_user_api_users_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Create User
+  /api/users/me:
+    patch:
+      operationId: update_user_me_api_users_me_patch
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Update User Me
+    post:
+      operationId: read_users_me_api_users_me_post
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: Successful Response
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Read Users Me
+  /health:
+    get:
+      operationId: health_check_health_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Health Check
+  /holiday-defaults/:
+    post:
+      operationId: set_holiday_defaults_holiday_defaults__post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HolidayDefaults'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Set Holiday Defaults
+  /metrics:
+    get:
+      operationId: get_metrics_metrics_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Get Metrics
+  /version:
+    get:
+      operationId: get_version_version_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Get Version
+  /weekday-defaults/:
+    post:
+      operationId: set_weekday_defaults_weekday_defaults__post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WeekdayDefaults'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Set Weekday Defaults

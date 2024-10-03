@@ -1,0 +1,21 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+psycopg2-binary
+pydantic[email]
+alembic
+python-dotenv
+fastapi-admin
+sqladmin
+passlib[bcrypt]
+python-jose
+
+# openai==0.28.0
+openai
+insightface
+onnxruntime
+PyYAML
+pyomo
+pandas
+numpy==1.23.0
+swiglpk 

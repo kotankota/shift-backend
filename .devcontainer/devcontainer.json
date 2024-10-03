@@ -1,0 +1,20 @@
+{
+    "name": "FastAPI Dev Container",
+    "dockerComposeFile": "../docker-compose.yml",
+    "service": "web",
+    "workspaceFolder": "/app",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.shell.linux": "/bin/bash"
+            },
+            "extensions": [
+                "ms-python.python",
+                "ms-python.vscode-pylance"
+            ]   
+        }
+    },
+    
+    "postCreateCommand": "pip install -r requirements.txt",
+    "remoteUser": "root"
+}
