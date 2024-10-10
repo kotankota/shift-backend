@@ -19,3 +19,5 @@ pyomo
 pandas
 numpy==1.23.0
 swiglpk 
+psutil
+pyscipopt

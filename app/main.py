@@ -10,8 +10,8 @@ from app.database import engine, get_db
 from app.auth import authenticate_user, create_access_token, get_current_user, get_password_hash
 from fastapi.security import OAuth2PasswordRequestForm
 from typing import List
-from datetime import date
-from app.shift_scheduler import run_shift_scheduling
+from datetime import date, datetime, timedelta
+from app.shift_scheduler import run_shift_scheduling, run_shift_scheduling_test
 from sqladmin import Admin, ModelView
 
 app = FastAPI()
@@ -54,18 +54,18 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token = create_access_token(data={"sub": user.email})
-    return {"access_token": access_token, "token_type": "bearer", "user_id": user.id, "role": user.role}
+    res = {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user_id": user.id,
+        "role": user.role,
+        "name": user.name
+    }
 
-# ## サインアップ
-# @app.post("/api/signup", response_model=User)
-# def signup(user_in: UserCreate, db: Session = Depends(get_db)):
-#     db_user = crud_user.get_by_email(db, email=user_in.email)
-#     if db_user:
-#         raise HTTPException(status_code=400, detail="メールアドレスは既に登録されています。")
-#     return crud_user.create(db=db, obj_in=user_in)
+    return res
 
 ## ログインユーザー情報取得
-@app.post("/api/users/me", response_model=User)
+@app.get("/api/users/me", response_model=User)
 def read_users_me(current_user: User = Depends(get_current_user)):
     return current_user
 
@@ -77,11 +77,6 @@ def update_user_me(user_in: UserUpdate, db: Session = Depends(get_db), current_u
         raise HTTPException(status_code=404, detail="ユーザーが見つかりません。")
     return crud_user.update(db=db, db_obj=db_user, obj_in=user_in)
 
-
-
-
-
-
 # 2. ユーザー管理API
 
 ## ユーザーリスト取得
@@ -89,8 +84,7 @@ def update_user_me(user_in: UserUpdate, db: Session = Depends(get_db), current_u
 def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="アクセスが拒否されました。")
-    users = crud_user.get_multi(db, skip=skip, limit=limit)
-    return users
+    return crud_user.get_multi(db, skip=skip, limit=limit)
 
 ## 新規ユーザー追加
 @app.post("/api/users", response_model=User)
@@ -115,7 +109,17 @@ def create_availability(availability_in: AvailabilityCreate, db: Session = Depen
 def read_availabilities(userId: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     if current_user.id != userId and current_user.role != "admin":
         raise HTTPException(status_code=403, detail="アクセスが拒否されました。")
-    return db.query(Availability).filter(Availability.user_id == userId).all()
+    return crud_availability.get_by_user_id(db, user_id=userId)
+
+## 一月の全員分のシフト取得
+@app.get("/api/availabilities")
+def read_monthly_availabilities(month: int, year: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="アクセスが拒否されました。")
+    return crud_availability.get_monthly(db, month, year)
+
+
+
 
 # 4. シフトスケジュールAPI
 
@@ -130,16 +134,13 @@ def run_scheduler(db: Session = Depends(get_db), current_user: User = Depends(ge
     run_shift_scheduling(db)
     return {"message": "シフトスケジューリングが完了しました。"}
 
-## シフトスケジュール取得
-@app.get("/api/schedules", response_model=List[Schedule])
-def read_schedules(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    if current_user.role == "employee":
-        # ユーザーは自分のスケジュールのみ取得
-        schedules = db.query(Schedule).filter(Schedule.user_id == current_user.id).all()
-    else:
-        # 管理者は全てのスケジュールを取得
-        schedules = crud_schedule.list(db)
-    return schedules
+
+@app.post("/api/schedules/run-test")
+def run_scheduler_test():
+    # 既存のスケジュールを削除
+    # シフトスケジューリングを実行
+    return run_shift_scheduling_test()
+
 
 # 5. デイリー制約API
 
@@ -148,18 +149,14 @@ def read_schedules(db: Session = Depends(get_db), current_user: User = Depends(g
 def read_daily_constraints(skip: int = 0, limit: int = 31, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="アクセスが拒否されました。")
-    constraints = crud_daily_constraint.get_multi(db, skip=skip, limit=limit)
-    return constraints
+    return crud_daily_constraint.get_multi(db, skip=skip, limit=limit)
 
 ## 特定の日付のデイリー制約を取得
 @app.get("/api/daily-constraints/{date}", response_model=DailyConstraint)
 def read_daily_constraint(date: date, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="アクセスが拒否されました。")
-    constraint = crud_daily_constraint.get_by_date(db, date=date)
-    if not constraint:
-        raise HTTPException(status_code=404, detail="指定された日付の制約が見つかりません。")
-    return constraint
+    return crud_daily_constraint.get_by_date(db, date=date)
 
 ## デイリー制約の作成
 @app.post("/api/daily-constraints", response_model=DailyConstraint)
@@ -190,8 +187,6 @@ def delete_daily_constraint(id: str, db: Session = Depends(get_db), current_user
     return {"message": "制約が削除されました。"}
 
 
-
-
 @app.post("/weekday-defaults/")
 def set_weekday_defaults(defaults: WeekdayDefaults):
     if defaults.weekday < 0 or defaults.weekday > 6:
@@ -210,6 +205,7 @@ def set_holiday_defaults(defaults: HolidayDefaults):
 ## ヘルスチェック
 @app.get("/health")
 def health_check():
+    print("health check")
     return {"status": "ok"}
 
 ## バージョン情報

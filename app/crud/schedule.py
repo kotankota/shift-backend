@@ -10,4 +10,6 @@ class CRUDSchedule(CRUDBase[Schedule, ScheduleCreate, ScheduleUpdate]):
         db.query(Schedule).delete()
         db.commit()
 
+    
+
 crud_schedule = CRUDSchedule(Schedule)

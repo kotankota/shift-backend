@@ -72,7 +72,6 @@ def upgrade() -> None:
     # ユーザーの初期データを定義
     users = [
         User(id="1", name="Admin User", email="admin@example.com", hashed_password="$2b$12$QU4phCxcPsAksVLHap3JveJrK1HJ0aqhiDC7PnLPs6BpmTW0Bm/ta", role="admin"),
-        User(id="2", name="Employee User", email="employee@example.com", hashed_password="$2b$12$QU4phCxcPsAksVLHap3JveJrK1HJ0aqhiDC7PnLPs6BpmTW0Bm/ta", role="employee")
     ]
     
 

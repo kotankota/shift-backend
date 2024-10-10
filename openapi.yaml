@@ -2,6 +2,10 @@ components:
   schemas:
     Availability:
       properties:
+        createdAt:
+          format: date-time
+          title: Createdat
+          type: string
         date:
           format: date
           title: Date
@@ -12,9 +16,9 @@ components:
         isAvailable:
           title: Isavailable
           type: boolean
-        timestamp:
+        updatedAt:
           format: date-time
-          title: Timestamp
+          title: Updatedat
           type: string
         userId:
           title: Userid
@@ -24,7 +28,8 @@ components:
       - isAvailable
       - id
       - userId
-      - timestamp
+      - createdAt
+      - updatedAt
       title: Availability
       type: object
     AvailabilityCreate:
@@ -172,37 +177,13 @@ components:
       - maxEmployees
       title: HolidayDefaults
       type: object
-    Schedule:
-      properties:
-        assigned:
-          title: Assigned
-          type: boolean
-        date:
-          format: date
-          title: Date
-          type: string
-        id:
-          title: Id
-          type: string
-        timestamp:
-          format: date-time
-          title: Timestamp
-          type: string
-        userId:
-          title: Userid
-          type: string
-      required:
-      - date
-      - assigned
-      - id
-      - userId
-      - timestamp
-      title: Schedule
-      type: object
     Token:
       properties:
         accessToken:
           title: Accesstoken
+          type: string
+        name:
+          title: Name
           type: string
         role:
           title: Role
@@ -218,6 +199,7 @@ components:
       - tokenType
       - userId
       - role
+      - name
       title: Token
       type: object
     User:
@@ -344,6 +326,40 @@ info:
 openapi: 3.1.0
 paths:
   /api/availabilities:
+    get:
+      operationId: read_monthly_availabilities_api_availabilities_get
+      parameters:
+      - in: query
+        name: month
+        required: true
+        schema:
+          title: Month
+          type: integer
+      - in: query
+        name: year
+        required: true
+        schema:
+          title: Year
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Availability'
+                title: Response Read Monthly Availabilities Api Availabilities Get
+                type: array
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Read Monthly Availabilities
     post:
       operationId: create_availability_api_availabilities_post
       requestBody:
@@ -564,22 +580,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
           description: Validation Error
       summary: Login For Access Token
-  /api/schedules:
-    get:
-      operationId: read_schedules_api_schedules_get
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/Schedule'
-                title: Response Read Schedules Api Schedules Get
-                type: array
-          description: Successful Response
-      security:
-      - OAuth2PasswordBearer: []
-      summary: Read Schedules
   /api/schedules/run:
     post:
       operationId: run_scheduler_api_schedules_run_post
@@ -592,6 +592,16 @@ paths:
       security:
       - OAuth2PasswordBearer: []
       summary: Run Scheduler
+  /api/schedules/run-test:
+    post:
+      operationId: run_scheduler_test_api_schedules_run_test_post
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Run Scheduler Test
   /api/users:
     get:
       operationId: read_users_api_users_get
@@ -654,6 +664,18 @@ paths:
       - OAuth2PasswordBearer: []
       summary: Create User
   /api/users/me:
+    get:
+      operationId: read_users_me_api_users_me_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: Successful Response
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Read Users Me
     patch:
       operationId: update_user_me_api_users_me_patch
       requestBody:
@@ -678,18 +700,6 @@ paths:
       security:
       - OAuth2PasswordBearer: []
       summary: Update User Me
-    post:
-      operationId: read_users_me_api_users_me_post
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-          description: Successful Response
-      security:
-      - OAuth2PasswordBearer: []
-      summary: Read Users Me
   /health:
     get:
       operationId: health_check_health_get
