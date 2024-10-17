@@ -19,12 +19,13 @@ class CRUDAvailability(CRUDBase[Availability, AvailabilityCreate, AvailabilityUp
         for user in users:
             user_data = {
                 "name": user.name,
-                "availabilities": []
+                "availabilities": [0] * (end_date.day)
             }
             availabilities = self.get_by_user_id(db, user.id)
+            # TODO: temp
             for availability in availabilities:
-                if start_date <= availability.date <= end_date:
-                    user_data["availabilities"].append(availability)
+                if start_date <= availability.date <= end_date and availability.is_available:
+                    user_data["availabilities"][availability.date.day - 1] = 1
             result.append(user_data)
         
         return result
