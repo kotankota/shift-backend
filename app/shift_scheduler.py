@@ -89,12 +89,10 @@ def run_shift_scheduling_test():
         'j': [0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1]
     }
 
-
     # 目的関数の定義
     def obj_rule(model):    
         return sum((model.x[e, d] - submitted_shift[e][d-1]) ** 2 for e in Emp for d in Day)
     model.objective = pyo.Objective(rule=obj_rule, sense=pyo.minimize)
-
 
     # 出勤希望日
     def shift_constraint(model, e, d):
@@ -111,11 +109,17 @@ def run_shift_scheduling_test():
 
     model.employee_count_constraint = pyo.Constraint(Day, rule=employee_count_constraint)
 
+    # 制約を満たすかどうかのチェック
+    constraint_violations = []
+    for d in Day:
+        employee_count = sum(submitted_shift[e][d-1] for e in Emp)
+        if employee_count < 3:
+            constraint_violations.append(f"日付 {d} の出勤人数が制約を満たしていません: {employee_count} 人")
 
-    # # 最低でも週1回は出勤する
-    # def weekly_work_constraint(model, e, w):
-    #     return sum(model.x[e, d] for d in range(w*7+1, min((w+1)*7+1, 32))) >= 1
-    # model.weekly_work_constraint = pyo.Constraint(Emp, range(5), rule=weekly_work_constraint)
+    if constraint_violations:
+        return {"status": "error", "violations": constraint_violations}
+
+
 
     # 求解
     opt = SolverFactory("scip", solver_io="nl")
@@ -140,13 +144,4 @@ def run_shift_scheduling_test():
     import json
     shift_json = json.dumps(shift_list, ensure_ascii=False)
     print(shift_json)
-    return shift_list
-
-    # # 各曜日の人数の合計を表示
-    # for d in Day:
-    #     total_employees = sum(pyo.value(model.x[e, d]) for e in Emp)
-    #     print(f"曜日 {d} の出勤人数: {total_employees}")
-
-    
-
-        
+    return {"status": "success", "shifts": shift_list}
