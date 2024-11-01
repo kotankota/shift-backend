@@ -78,8 +78,3 @@ def downgrade():
 - schemas/[].pyにスキーマ記述
 - crud/[].pyにcrud操作記述
 - main.pyにルーティング作成
-
-
-## TODO:
-- listで数を表示
-- デフォルト値の設定
